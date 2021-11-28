@@ -27,6 +27,11 @@ contract TransactionThrottler is Ownable {
         _tradingStart = 1639954800;
         _maxTransferAmount = 50_000 * 10**18;
         _restrictionActive = true;
+
+        emit MarkedUnthrottled(owner, true);
+        emit TradingTimeChanged(_tradingStart);
+        emit MaxTransferAmountChanged(_maxTransferAmount);
+        emit RestrictionActiveChanged(_restrictionActive);
     }
 
     function setTradingStart(uint256 _time) external onlyOwner() {
