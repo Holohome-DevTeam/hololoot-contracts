@@ -75,6 +75,7 @@ contract TransactionThrottler is Ownable {
         address recipient,
         uint256 amount
     ) {
+        require(sender != recipient, "sender is recipient");
         if (_restrictionActive && !_isUnthrottled[recipient] && !_isUnthrottled[sender]) {
             require(block.timestamp >= _tradingStart, "Protection: Transfers disabled");
 

@@ -53,7 +53,7 @@ describe("Hololoot ERC20", () => {
     });
 
     it("should revert if transfer amount exceeds balance", async function () {
-      await expect(token.connect(alice).transfer(alice.address, 1007)).to.be.revertedWith("ERC20: transfer amount exceeds balance");
+      await expect(token.connect(alice).transfer(bob.address, 1007)).to.be.revertedWith("ERC20: transfer amount exceeds balance");
     });
 
     it("should revert if amount is 0", async function () {
