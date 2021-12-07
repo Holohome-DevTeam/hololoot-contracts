@@ -24,8 +24,8 @@ contract TransactionThrottler is Ownable {
         require(!_initlialized, "Protection: Already initialized");
         _initlialized = true;
         _isUnthrottled[owner] = true;
-        _tradingStart = 1639954800;
-        _maxTransferAmount = 50_000 * 10**18;
+        _tradingStart = 1639407600;
+        _maxTransferAmount = 15_000 * 10**18;
         _restrictionActive = true;
 
         emit MarkedUnthrottled(owner, true);

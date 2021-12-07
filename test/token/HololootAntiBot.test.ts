@@ -9,12 +9,12 @@ import { getBigNumber, latest, advanceTimeAndBlock } from "../utilities";
 
 const { provider, deployContract } = waffle;
 
-describe("Hololoot Anti-bot", () => {
+describe("Hololoot Antibot", () => {
   const [deployer, alice, bob, carol, uniswap] = provider.getWallets() as Wallet[];
 
   let token: Hololoot;
 
-  const FIVE_HUNDRED_MILLION_TOKENS: BigNumber = getBigNumber(500_000_000);
+  const ONE_HUNDRED_MILLION_TOKENS: BigNumber = getBigNumber(100_000_000);
   const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
   const one_hundred = getBigNumber(100);
 
@@ -122,27 +122,27 @@ describe("Hololoot Anti-bot", () => {
 
     it("should transfer correctly when amount under max limit", async function () {
       // transfer
-      await expect(token.transfer(alice.address, getBigNumber(50000)))
+      await expect(token.transfer(alice.address, getBigNumber(15000)))
         .to.emit(token, "Transfer")
-        .withArgs(deployer.address, alice.address, getBigNumber(50000));
+        .withArgs(deployer.address, alice.address, getBigNumber(15000));
 
       // prevents 1 tx per 30 sec limit
       await advanceTimeAndBlock(30);
 
       // transferFrom
-      await token.connect(alice).approve(bob.address, getBigNumber(50000));
-      await expect(token.connect(bob).transferFrom(alice.address, bob.address, getBigNumber(50000)))
+      await token.connect(alice).approve(bob.address, getBigNumber(15000));
+      await expect(token.connect(bob).transferFrom(alice.address, bob.address, getBigNumber(15000)))
         .to.emit(token, "Transfer")
-        .withArgs(alice.address, bob.address, getBigNumber(50000));
+        .withArgs(alice.address, bob.address, getBigNumber(15000));
     });
 
     it("should revert when more then one transfer per min for the same address when not whitelisted", async function () {
-      await token.transfer(uniswap.address, getBigNumber(50000));
+      await token.transfer(uniswap.address, getBigNumber(15000));
 
-      await token.connect(uniswap).transfer(alice.address, getBigNumber(50000));
+      await token.connect(uniswap).transfer(alice.address, getBigNumber(15000));
 
-      await token.connect(alice).approve(bob.address, getBigNumber(50000));
-      await expect(token.connect(bob).transferFrom(alice.address, bob.address, getBigNumber(50000))).to.be.revertedWith(
+      await token.connect(alice).approve(bob.address, getBigNumber(15000));
+      await expect(token.connect(bob).transferFrom(alice.address, bob.address, getBigNumber(15000))).to.be.revertedWith(
         "Protection: 30 sec/tx allowed"
       );
     });
@@ -266,23 +266,23 @@ describe("Hololoot Anti-bot", () => {
     });
 
     it("should change trading time correctly", async function () {
-      await expect(token.connect(alice).transfer(bob.address, getBigNumber(200000))).to.be.revertedWith("Protection: Transfers disabled");
+      await expect(token.connect(alice).transfer(bob.address, getBigNumber(150000))).to.be.revertedWith("Protection: Transfers disabled");
 
       await token.setTradingStart(tradingTimeEnd.add(3600));
 
       // time after initial trading and restriction lift time
       await advanceTimeAndBlock(3600);
       // should still be disabled
-      await expect(token.connect(alice).transfer(bob.address, getBigNumber(200000))).to.be.revertedWith("Protection: Transfers disabled");
+      await expect(token.connect(alice).transfer(bob.address, getBigNumber(150000))).to.be.revertedWith("Protection: Transfers disabled");
 
       await advanceTimeAndBlock(3600);
       // should be restricted by limit
-      await expect(token.connect(alice).transfer(bob.address, getBigNumber(200000))).to.be.revertedWith("Protection: Limit exceeded");
+      await expect(token.connect(alice).transfer(bob.address, getBigNumber(150000))).to.be.revertedWith("Protection: Limit exceeded");
 
       // should transfer correctly
-      await expect(token.connect(alice).transfer(bob.address, getBigNumber(50000)))
+      await expect(token.connect(alice).transfer(bob.address, getBigNumber(15000)))
         .to.emit(token, "Transfer")
-        .withArgs(alice.address, bob.address, getBigNumber(50000));
+        .withArgs(alice.address, bob.address, getBigNumber(15000));
     });
 
     it("it should revert when trading time already started", async function () {
