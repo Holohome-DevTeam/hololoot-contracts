@@ -38,14 +38,14 @@ const config: HardhatUserConfig = {
     tests: "./test",
   },
   namedAccounts: {
-    deployer: {
-      default: 0,
-    },
-    temp_admin: {
-      default: 1,
-    },
     token_deployer: {
-      default: 2,
+      default: 6,
+    },
+    admin: {
+      default: 7,
+    },
+    holo_deployer: {
+      default: 8,
     },
   },
   typechain: {

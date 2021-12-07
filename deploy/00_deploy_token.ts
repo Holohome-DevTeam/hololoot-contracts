@@ -5,7 +5,7 @@ import { chainName, displayResult, dim, cyan, green, yellow } from "./utilities/
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { getNamedAccounts, deployments, getChainId, ethers } = hre;
   const { deploy } = deployments;
-  const { token_deployer, temp_admin } = await getNamedAccounts();
+  const { token_deployer, admin } = await getNamedAccounts();
   const chainId = parseInt(await getChainId());
 
   // 31337 is unit testing, 1337 is for coverage
@@ -22,15 +22,15 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   const tokenDeployResult = await deploy("Hololoot", {
     from: token_deployer,
-    args: [temp_admin],
+    args: [admin],
     skipIfAlreadyDeployed: true,
   });
 
   displayResult("Hololoot", tokenDeployResult);
 
   const tokenContract = await ethers.getContractAt("Hololoot", tokenDeployResult.address);
-  dim(`Admin: ${temp_admin}`);
-  yellow("\nAdmin balance:\n" + (await tokenContract.balanceOf(temp_admin)).toString());
+  dim(`Admin: ${admin}`);
+  yellow("\nAdmin balance:\n" + (await tokenContract.balanceOf(admin)).toString());
 
   green(`\nDone!`);
 };
