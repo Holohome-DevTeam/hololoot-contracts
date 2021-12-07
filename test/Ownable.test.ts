@@ -28,24 +28,29 @@ describe("Ownable", () => {
 
   describe("onlyOwner", () => {
     it("should revert when onlyOwner function not executed by the owner", async function () {
-      await expect(ownable.connect(alice).transferOwnership(alice.address, true)).to.be.revertedWith("caller is not the owner");
+      await expect(ownable.connect(alice).transferOwnership(alice.address, true, false)).to.be.revertedWith("caller is not the owner");
     });
   });
 
   describe("transferOwnership", () => {
-    it("should revert when transfer directly to zero address", async function () {
-      await expect(ownable.transferOwnership(ZERO_ADDRESS, true)).to.be.revertedWith("zero address");
+    it("should revert when transfer directly to zero address without renounce", async function () {
+      await expect(ownable.transferOwnership(ZERO_ADDRESS, true, false)).to.be.revertedWith("zero address");
+    });
+
+    it("should renounce ownership correctly with renounce = true", async function () {
+      await ownable.transferOwnership(ZERO_ADDRESS, true, true);
+      expect(await ownable.owner()).to.be.equal(ZERO_ADDRESS);
     });
 
     it("should transfer ownership directly", async function () {
-      await expect(ownable.transferOwnership(alice.address, true))
+      await expect(ownable.transferOwnership(alice.address, true, false))
         .to.emit(ownable, "OwnershipTransferred")
         .withArgs(deployer.address, alice.address);
       expect(await ownable.owner()).to.be.equal(alice.address);
     });
 
     it("should assign pending owner correctly", async function () {
-      await ownable.transferOwnership(alice.address, false);
+      await ownable.transferOwnership(alice.address, false, false);
       expect(await ownable.owner()).to.be.equal(deployer.address);
       expect(await ownable.pendingOwner()).to.be.equal(alice.address);
     });
@@ -57,7 +62,7 @@ describe("Ownable", () => {
     });
 
     it("should claim pending ownership correctly", async function () {
-      await ownable.transferOwnership(alice.address, false);
+      await ownable.transferOwnership(alice.address, false, false);
       await expect(ownable.connect(alice).claimOwnership()).to.emit(ownable, "OwnershipTransferred").withArgs(deployer.address, alice.address);
     });
   });
