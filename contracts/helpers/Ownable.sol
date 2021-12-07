@@ -21,11 +21,16 @@ contract Ownable is OwnableData {
      * @dev Transfers ownership to `newOwner`. Either directly or claimable by the new pending owner.
      *      Can only be invoked by the current `owner`.
      * @param _newOwner Address of the new owner.
-     * @param _direct True if `newOwner` should be set immediately. False if `newOwner` needs to use `claimOwnership`.
+     * @param _direct True if `_newOwner` should be set immediately. False if `_newOwner` needs to use `claimOwnership`.
+     * @param _renounce Allows the `_newOwner` to be `address(0)` if `_direct` and `_renounce` is True. Has no effect otherwise
      */
-    function transferOwnership(address _newOwner, bool _direct) external onlyOwner {
+    function transferOwnership(
+        address _newOwner,
+        bool _direct,
+        bool _renounce
+    ) external onlyOwner {
         if (_direct) {
-            require(_newOwner != address(0), "zero address");
+            require(_newOwner != address(0) || _renounce, "zero address");
 
             emit OwnershipTransferred(owner, _newOwner);
             owner = _newOwner;
