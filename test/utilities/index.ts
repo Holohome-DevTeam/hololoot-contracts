@@ -9,3 +9,4 @@ export function getBigNumber(amount: number, decimals: number = 18) {
 }
 
 export * from "./time";
+export * from "./vesting";
