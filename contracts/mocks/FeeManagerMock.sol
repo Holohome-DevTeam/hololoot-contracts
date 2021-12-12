@@ -9,7 +9,7 @@ contract FeeManagerMock is FeeManager {
     bool private shouldSync;
 
     /**
-     * @param _token FAN token address
+     * @param _token token address
      */
     constructor(address _token) FeeManager(_token) {}
 
