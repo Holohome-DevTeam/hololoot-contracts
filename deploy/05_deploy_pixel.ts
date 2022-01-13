@@ -5,7 +5,7 @@ import { chainName, displayResult, dim, cyan, green, yellow } from "./utilities/
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { getNamedAccounts, deployments, getChainId, ethers } = hre;
   const { deploy } = deployments;
-  const { holo_deployer, admin } = await getNamedAccounts();
+  const { token_deployer, admin } = await getNamedAccounts();
   const chainId = parseInt(await getChainId());
 
   // 31337 is unit testing, 1337 is for coverage
@@ -16,12 +16,12 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   cyan("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 
   dim(`network: ${chainName(chainId)} (${isTestEnvironment ? "local" : "remote"})`);
-  dim(`deployer: ${holo_deployer}`);
+  dim(`deployer: ${token_deployer}`);
 
   cyan("\nDeploying Pixel Contract...");
 
   const tokenDeployResult = await deploy("Holopixel", {
-    from: holo_deployer,
+    from: token_deployer,
     args: [admin],
     skipIfAlreadyDeployed: true,
   });

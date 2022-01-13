@@ -29,38 +29,23 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const vestingDeployment = await get("Vesting");
   const vestingContract = await ethers.getContractAt("Vesting", vestingDeployment.address, signer);
 
-  // const vestingCount: BigNumber = await vestingContract.getVestingsCount();
+  const vestingCount: BigNumber = await vestingContract.getVestingsCount();
 
-  // if (vestingCount.isZero()) {
-  let data: SaleData;
+  if (vestingCount.isZero()) {
+    let data: SaleData;
 
-  // cyan("\nConfiguring Seed...");
+    cyan("\nConfiguring Marketing...");
 
-  // data = getSaleData("seed");
-  // await addSaleData(data);
+    data = getSaleData("marketing");
+    await addSaleData(data);
 
-  // cyan("\nConfiguring Private...");
+    cyan("\nConfiguring Advisory...");
 
-  // data = getSaleData("private");
-  // await addSaleData(data);
-
-  // cyan("\nConfiguring IDO Synapse...");
-
-  // data = getSaleData("ido_synapse");
-  // await addSaleData(data);
-
-  // cyan("\nConfiguring IDO Seedify...");
-
-  // data = getSaleData("ido_seedify");
-  // await addSaleData(data);
-
-  cyan("\nConfiguring IDO Enjin...");
-
-  data = getSaleData("ido_enjin");
-  await addSaleData(data);
-  // } else {
-  //   yellow("Vestings already added: " + vestingCount);
-  // }
+    data = getSaleData("advisory");
+    await addSaleData(data);
+  } else {
+    yellow("Vestings already added: " + vestingCount);
+  }
 
   async function addSaleData(data: SaleData) {
     let transaction;

@@ -5,7 +5,7 @@ import { chainName, displayResult, dim, cyan, green } from "./utilities/utils";
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { getNamedAccounts, deployments, getChainId } = hre;
   const { deploy, get } = deployments;
-  const { holo_deployer } = await getNamedAccounts();
+  const { admin } = await getNamedAccounts();
   const chainId = parseInt(await getChainId());
 
   // 31337 is unit testing, 1337 is for coverage
@@ -16,7 +16,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   cyan("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 
   dim(`network: ${chainName(chainId)} (${isTestEnvironment ? "local" : "remote"})`);
-  dim(`deployer: ${holo_deployer}`);
+  dim(`deployer: ${admin}`);
 
   cyan("\nGet Hololoot Token Contract...");
   const HololootToken = await get("Hololoot");
@@ -25,13 +25,13 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const token = HololootToken.address;
 
   // BUSD on BSC Mainnet
-  const wBNB = "0xe9e7cea3dedca5984780bafc599bd69add087d56";
+  const BUSD = "0xe9e7cea3dedca5984780bafc599bd69add087d56";
 
   cyan("\nDeploying HoloFeeManager Contract...");
 
   const tokenDeployResult = await deploy("HoloFeeManager", {
-    from: holo_deployer,
-    args: [token, wBNB],
+    from: admin,
+    args: [token, BUSD],
     skipIfAlreadyDeployed: true,
   });
 
