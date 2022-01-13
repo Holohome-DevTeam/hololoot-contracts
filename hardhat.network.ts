@@ -61,6 +61,7 @@ if (alchemyUrl && process.env.FORK_ENABLED && mnemonic) {
     accounts: {
       mnemonic,
     },
+    blockGasLimit: 300000000,
   };
 }
 
@@ -71,6 +72,7 @@ if (mnemonic) {
     accounts: {
       mnemonic,
     },
+    gasPrice: 7000000000,
   };
   networks.bscTestnet = {
     chainId: 97,
